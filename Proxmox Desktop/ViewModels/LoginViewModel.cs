@@ -9,40 +9,50 @@ namespace ProxmoxDesktop.ViewModels;
 
 public partial class LoginViewModel : ObservableObject
 {
-    // ─── Server ───────────────────────────────────────────────────────────────
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial string Server { get; set; } = string.Empty;
+    // ─── Server ──────────────────────────────────────────────────────────────────────────
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private string server = string.Empty;
 
-    [ObservableProperty] public partial string Port    { get; set; } = "8006";
-    [ObservableProperty] public partial bool   SkipSsl { get; set; }
+    [ObservableProperty] private string port    = "8006";
+    [ObservableProperty] private bool   skipSsl;
 
-    // ─── Credentials ─────────────────────────────────────────────────────────
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial string Username { get; set; } = string.Empty;
+    // ─── Credentials ────────────────────────────────────────────────────────────────────
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private string username = string.Empty;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial string Password { get; set; } = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private string password = string.Empty;
 
-    [ObservableProperty] public partial string     Otp          { get; set; } = string.Empty;
-    [ObservableProperty] public partial bool       TotpVisible  { get; set; }
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial RealmData? SelectedRealm { get; set; }
+    [ObservableProperty] private string  otp         = string.Empty;
+    [ObservableProperty] private bool    totpVisible;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private RealmData? selectedRealm;
+
     public ObservableCollection<RealmData> Realms { get; } = [];
 
-    // ─── API Token ────────────────────────────────────────────────────────────
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial bool UseApiToken { get; set; }
-    partial void OnUseApiTokenChanged(bool _) => ErrorMessage = null;
+    // ─── API Token ─────────────────────────────────────────────────────────────────────
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private bool useApiToken;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial string TokenId { get; set; } = string.Empty;
+    partial void OnUseApiTokenChanged(bool value) => ErrorMessage = null;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial string TokenSecret { get; set; } = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private string tokenId = string.Empty;
 
-    // ─── State ────────────────────────────────────────────────────────────────
-    [ObservableProperty] public partial bool    IsBusy       { get; set; }
-    [ObservableProperty] public partial string? ErrorMessage { get; set; }
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+    private string tokenSecret = string.Empty;
+
+    // ─── State ──────────────────────────────────────────────────────────────────────────
+    [ObservableProperty] private bool    isBusy;
+    [ObservableProperty] private string? errorMessage;
 
     private readonly ConfigurationService _config;
     private ApiClient? _api;
@@ -54,7 +64,7 @@ public partial class LoginViewModel : ObservableObject
         LoadSaved();
     }
 
-    // ─── Commands ─────────────────────────────────────────────────────────────
+    // ─── Commands ─────────────────────────────────────────────────────────────────────
 
     [RelayCommand]
     public async Task LoadRealmsAsync(CancellationToken ct = default)
@@ -109,7 +119,7 @@ public partial class LoginViewModel : ObservableObject
 
     public event Action<IApiClient>? OnLoginSuccess;
 
-    // ─── Persistence ──────────────────────────────────────────────────────────
+    // ─── Persistence ───────────────────────────────────────────────────────────────────
 
     private void LoadSaved()
     {

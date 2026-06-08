@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using ProxmoxDesktop.Api.Internal;
@@ -40,7 +41,7 @@ public sealed class ApiClient : IApiClient
     public ApiClient(string server, string port, bool skipSsl)
         : this(new ServerInfo(server, int.Parse(port), skipSsl)) { }
 
-    // ─── Auth ────────────────────────────────────────────────────────────────
+    // ─── Auth ─────────────────────────────────────────────────────────────────────────
 
     public async Task<List<RealmData>> GetRealmsAsync(CancellationToken ct = default)
     {
@@ -130,7 +131,7 @@ public sealed class ApiClient : IApiClient
         catch { /* best-effort renewal — will fail on next API call and surface there */ }
     }
 
-    // ─── Data ─────────────────────────────────────────────────────────────────
+    // ─── Data ──────────────────────────────────────────────────────────────────────────
 
     public async Task<List<NodeData>> GetNodesAsync(CancellationToken ct = default)
     {
@@ -216,7 +217,7 @@ public sealed class ApiClient : IApiClient
         return JsonSerializer.Deserialize<PveResponse<SpiceObject>>(raw, _json)?.Data;
     }
 
-    // ─── HTTP helpers ─────────────────────────────────────────────────────────
+    // ─── HTTP helpers ────────────────────────────────────────────────────────────────────
 
     private async Task<string> GetAsync(string path, CancellationToken ct = default)
     {

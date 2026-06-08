@@ -15,22 +15,22 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private CancellationTokenSource _cts = new();
     private Dictionary<int, string> _previousStatuses = [];
 
-    [ObservableProperty] public partial ObservableCollection<MachineData> Machines         { get; set; } = [];
-    [ObservableProperty] public partial ObservableCollection<NodeGroup>   GroupedMachines  { get; set; } = [];
-    [ObservableProperty] public partial ObservableCollection<MachineData> FilteredMachines { get; set; } = [];
-    [ObservableProperty] public partial ObservableCollection<string>      NodeList         { get; set; } = [];
-    [ObservableProperty] public partial bool    IsLoading        { get; set; }
-    [ObservableProperty] public partial string  SearchQuery      { get; set; } = string.Empty;
-    [ObservableProperty] public partial string? StatusMessage    { get; set; }
-    [ObservableProperty] public partial bool    IsGroupedByNode  { get; set; }
-    [ObservableProperty] public partial string? SelectedNode     { get; set; }
+    [ObservableProperty] private ObservableCollection<MachineData> machines         = [];
+    [ObservableProperty] private ObservableCollection<NodeGroup>   groupedMachines  = [];
+    [ObservableProperty] private ObservableCollection<MachineData> filteredMachines = [];
+    [ObservableProperty] private ObservableCollection<string>      nodeList         = [];
+    [ObservableProperty] private bool    isLoading;
+    [ObservableProperty] private string  searchQuery      = string.Empty;
+    [ObservableProperty] private string? statusMessage;
+    [ObservableProperty] private bool    isGroupedByNode;
+    [ObservableProperty] private string? selectedNode;
 
     // Dashboard stats
-    [ObservableProperty] public partial int TotalCount   { get; set; }
-    [ObservableProperty] public partial int RunningCount { get; set; }
-    [ObservableProperty] public partial int StoppedCount { get; set; }
-    [ObservableProperty] public partial int VmCount      { get; set; }
-    [ObservableProperty] public partial int LxcCount     { get; set; }
+    [ObservableProperty] private int totalCount;
+    [ObservableProperty] private int runningCount;
+    [ObservableProperty] private int stoppedCount;
+    [ObservableProperty] private int vmCount;
+    [ObservableProperty] private int lxcCount;
 
     partial void OnSearchQueryChanged(string _)   => ApplyFilter();
     partial void OnIsGroupedByNodeChanged(bool _) => ApplyFilter();
@@ -63,12 +63,10 @@ public partial class MainViewModel : ObservableObject, IDisposable
                 Machines.Clear();
                 foreach (var m in all) Machines.Add(m);
 
-                // Update node list
                 var nodes = all.Select(m => m.NodeName).Distinct().OrderBy(n => n).ToList();
                 NodeList.Clear();
                 foreach (var n in nodes) NodeList.Add(n);
 
-                // Update stats
                 TotalCount   = all.Count;
                 RunningCount = all.Count(m => m.IsRunning);
                 StoppedCount = all.Count(m => !m.IsRunning);
